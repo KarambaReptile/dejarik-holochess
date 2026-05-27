@@ -193,7 +193,7 @@ export default function DejarikGame() {
   const [bonusTurn, setBonusTurn]     = useState(false);
   const [stunned, setStunned]         = useState({});        // pieceId → turns
   const [animSpace, setAnimSpace]     = useState(null);
-  // aiThinkingRef removed — AI flow handled by effect dependencies only
+  const aiThinkingRef = useRef(false);
 
   const boardSize   = 420;
   const cx          = boardSize / 2;
@@ -204,14 +204,10 @@ export default function DejarikGame() {
   // ── helpers ────────────────────────────────────────────────
   const pieceAt   = useCallback((space, ps = pieces) => ps.find(p => p.position === space && p.alive) || null, [pieces]);
   const aliveOf   = (team, ps = pieces) => ps.filter(p => p.team === team && p.alive);
-  // checkWin: always pass the fresh ps array — never relies on stale closure
-  // Returns winning team only when the ENTIRE enemy roster is eliminated (all 8 dead)
   const checkWin  = (ps) => {
-    const lightAlive = ps.filter(p => p.team === "light" && p.alive).length;
-    const darkAlive  = ps.filter(p => p.team === "dark"  && p.alive).length;
-    if (lightAlive === 0) return "dark";
-    if (darkAlive  === 0) return "light";
-    return null;  // game continues — creatures still standing on both sides
+    if (!aliveOf("light", ps).length) return "dark";
+    if (!aliveOf("dark",  ps).length) return "light";
+    return null;
   };
 
   const endTurn = (ps, nextTeam, log = []) => {
@@ -265,29 +261,21 @@ export default function DejarikGame() {
       }
 
       setPieces(ps);
-      setCombatLog(prev => [...prev, "── COMBAT ──", ...result.log]);
-      setShowLog(true);
-
-      // Check win ONLY after updating — game ends when ALL 8 enemy pieces are gone
       const newWinner = checkWin(ps);
-      if (newWinner) {
-        setWinner(newWinner);
-        setPhase("over");
-        setStatusMsg(`${newWinner === "light" ? "☀️ Light Side" : "🌑 Dark Side"} WINS — all enemy creatures eliminated!`);
-        return;
-      }
+      if (newWinner) { setWinner(newWinner); setPhase("over"); return; }
 
-      // Bonus move: combat winner gets another turn if on the active team
+      // Bonus move: winner gets another turn if they are on the active team
       if (winner.team === currentActiveTeam) {
         setBonusTurn(true);
         setSelected(null);
         setValidMoves([]);
         setPhase("select");
-        const remaining = ps.filter(p => p.team !== currentActiveTeam && p.alive).length;
-        setStatusMsg(`🎯 ${winner.name} wins! BONUS MOVE — ${remaining} enemy creature${remaining!==1?"s":""} remain`);
+        setStatusMsg(`🎯 ${winner.name} wins combat! BONUS MOVE — move any piece again`);
+        setCombatLog(prev => [...prev, "── NEW COMBAT ──", ...result.log]);
+        setShowLog(true);
       } else {
         const next = currentActiveTeam === "light" ? "dark" : "light";
-        endTurn(ps, next, []);
+        endTurn(ps, next, result.log);
       }
     } else {
       // Simple move, no combat
@@ -325,48 +313,32 @@ export default function DejarikGame() {
   };
 
   // ── AI turn ────────────────────────────────────────────────
-  // Single flat effect — no nested timeouts, no ref guards.
-  // Fires whenever activeTeam=dark AND phase=select AND pieces state changes.
-  // The pieces fingerprint ensures it re-fires after every combat (kill or bonus turn).
   useEffect(() => {
-    if (mode !== "pve") return;
-    if (activeTeam !== "dark") return;
-    if (phase !== "select") return;
-    if (winner) return;
-
-    // Snapshot piece state at effect-fire time
-    const currentPieces = pieces;
-    const dark  = currentPieces.filter(p => p.team === "dark"  && p.alive);
-    const light = currentPieces.filter(p => p.team === "light" && p.alive);
-
+    if (mode !== "pve" || activeTeam !== "dark" || phase !== "select" || phase === "over") return;
+    if (aiThinkingRef.current) return;
+    aiThinkingRef.current = true;
     setStatusMsg("🤖 Wookiee AI is calculating…");
 
     const timer = setTimeout(() => {
-      const move = aiChooseMove(dark, light, currentPieces);
-
-      if (!move) {
-        // No valid move — hand turn to light
-        setActiveTeam("light");
-        setPhase("select");
-        setSelected(null);
-        setValidMoves([]);
-        setStatusMsg("☀️ Light Side — choose your piece");
-        return;
+      const dark  = pieces.filter(p => p.team === "dark"  && p.alive);
+      const light = pieces.filter(p => p.team === "light" && p.alive);
+      const move  = aiChooseMove(dark, light, pieces);
+      if (move) {
+        setSelected(move.piece.id);
+        setValidMoves([move.dest]);
+        setTimeout(() => {
+          executeMove(move.piece.id, move.dest, pieces, "dark");
+          setBonusTurn(false);
+          aiThinkingRef.current = false;
+        }, 400);
+      } else {
+        endTurn(pieces, "light");
+        aiThinkingRef.current = false;
       }
-
-      // Execute move immediately — executeMove handles setPieces + endTurn/bonus internally
-      setSelected(move.piece.id);
-      executeMove(move.piece.id, move.dest, currentPieces, "dark");
-      setSelected(null);
-      setValidMoves([]);
     }, 900);
-
     return () => clearTimeout(timer);
-  // pieces fingerprint: re-fire after every kill or move (alive count + hp sum)
   // eslint-disable-next-line
-  }, [activeTeam, phase, mode, winner,
-      pieces.filter(p=>p.alive).length,
-      pieces.reduce((a,p)=>a+p.hp,0)]);
+  }, [activeTeam, phase, mode]);
 
   // ── restart ────────────────────────────────────────────────
   const restart = (m) => {
