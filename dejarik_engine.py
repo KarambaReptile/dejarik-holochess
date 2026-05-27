@@ -551,12 +551,17 @@ class DejarikGame:
         pass  # active stays the same
 
     def _check_winner(self):
+        """
+        Game ends ONLY when one side has lost ALL 8 creatures.
+        A single kill does not end the game — play continues until full elimination.
+        """
         light_alive = self.get_alive(Team.LIGHT)
         dark_alive  = self.get_alive(Team.DARK)
-        if not light_alive:
+        if len(light_alive) == 0:
             self.winner = Team.DARK
-        elif not dark_alive:
+        elif len(dark_alive) == 0:
             self.winner = Team.LIGHT
+        # else: both sides still have creatures — game continues
 
     def is_over(self) -> bool:
         return self.winner is not None
