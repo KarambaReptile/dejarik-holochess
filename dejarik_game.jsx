@@ -54,6 +54,259 @@ const STARTING_POSITIONS = {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// SVG CREATURE PORTRAITS — canonical appearances
+// Each renders at 32×32 inside a viewBox="0 0 32 32"
+// Team tint applied via CSS filter on the <g> wrapper
+// ═══════════════════════════════════════════════════════════════
+const CreatureSVG = ({ name, size = 32, team }) => {
+  const tint = team === "light" ? "drop-shadow(0 0 3px #00e5ff)" : "drop-shadow(0 0 3px #ff4444)";
+  const s = size / 32;
+  const t = `scale(${s})`;
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" style={{ filter: tint, overflow:"visible" }}>
+      <g transform={t}>
+        {CREATURE_PATHS[name] || <text x="4" y="22" fontSize="20">👾</text>}
+      </g>
+    </svg>
+  );
+};
+
+// SVG path data for each creature based on canonical appearances
+const CREATURE_PATHS = {
+
+  // HOUJIX — stocky quadruped dinosaur, low-slung, wide head
+  "Houjix": <>
+    {/* body */}
+    <ellipse cx="16" cy="20" rx="10" ry="7" fill="#5a8fc4" />
+    {/* head */}
+    <ellipse cx="24" cy="14" rx="6" ry="5" fill="#5a8fc4" />
+    {/* wide jaw */}
+    <ellipse cx="25" cy="17" rx="5" ry="3" fill="#3a6fa4" />
+    {/* eye */}
+    <circle cx="26" cy="12" r="1.5" fill="#fff" />
+    <circle cx="26.5" cy="12" r="0.8" fill="#111" />
+    {/* front legs */}
+    <rect x="8" y="24" width="3" height="6" rx="1.5" fill="#4a7fb4" />
+    <rect x="14" y="25" width="3" height="5" rx="1.5" fill="#4a7fb4" />
+    {/* back legs */}
+    <rect x="20" y="25" width="3" height="5" rx="1.5" fill="#4a7fb4" />
+    <rect x="25" y="24" width="3" height="6" rx="1.5" fill="#4a7fb4" />
+    {/* tail */}
+    <path d="M6 20 Q0 18 1 14" stroke="#4a7fb4" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    {/* armour ridge */}
+    <path d="M10 14 Q16 10 22 14" stroke="#3a6fa4" strokeWidth="2" fill="none"/>
+  </>,
+
+  // NG'OK — serpentine horned beast, rearing up, open jaws
+  "Ng'ok": <>
+    {/* lower coiled body */}
+    <ellipse cx="14" cy="26" rx="8" ry="5" fill="#c45a2a" />
+    {/* torso rearing up */}
+    <ellipse cx="16" cy="17" rx="5" ry="8" fill="#d4622a" />
+    {/* neck */}
+    <rect x="14" y="8" width="5" height="6" rx="2" fill="#d4622a" />
+    {/* head with open jaw */}
+    <ellipse cx="18" cy="6" rx="6" ry="5" fill="#c45a2a" />
+    <path d="M14 7 Q18 10 22 7" fill="#8B2200" />
+    {/* teeth */}
+    <line x1="15" y1="7" x2="15" y2="9" stroke="white" strokeWidth="0.8"/>
+    <line x1="17" y1="7" x2="17" y2="9.5" stroke="white" strokeWidth="0.8"/>
+    <line x1="19" y1="7" x2="19" y2="9" stroke="white" strokeWidth="0.8"/>
+    {/* horns */}
+    <line x1="14" y1="3" x2="12" y2="0" stroke="#8B2200" strokeWidth="1.5" strokeLinecap="round"/>
+    <line x1="18" y1="2" x2="20" y2="0" stroke="#8B2200" strokeWidth="1.5" strokeLinecap="round"/>
+    {/* ridged spine */}
+    <path d="M16 10 Q14 14 15 18" stroke="#8B2200" strokeWidth="1.5" fill="none"/>
+    {/* eye */}
+    <circle cx="20" cy="5" r="1.5" fill="#ffcc00" />
+    <circle cx="20" cy="5" r="0.7" fill="#111" />
+    {/* arm reaching forward */}
+    <path d="M20 16 Q26 14 28 18" stroke="#c45a2a" strokeWidth="3" fill="none" strokeLinecap="round"/>
+  </>,
+
+  // K'LOR'SLUG — scorpion body with humanoid upper torso, claws
+  "K'lor'slug": <>
+    {/* scorpion abdomen */}
+    <ellipse cx="10" cy="22" rx="8" ry="5" fill="#9b6a2a" />
+    {/* scorpion tail curling up */}
+    <path d="M16 20 Q22 16 24 10 Q26 6 22 4" stroke="#9b6a2a" strokeWidth="4" fill="none" strokeLinecap="round"/>
+    {/* stinger */}
+    <circle cx="21" cy="3" r="2" fill="#7b4a1a" />
+    {/* humanoid torso */}
+    <ellipse cx="12" cy="14" rx="5" ry="6" fill="#b07a3a" />
+    {/* humanoid head */}
+    <circle cx="12" cy="7" r="4" fill="#b07a3a" />
+    {/* alien face */}
+    <circle cx="10" cy="6" r="1" fill="#ffcc00" />
+    <circle cx="14" cy="6" r="1" fill="#ffcc00" />
+    {/* mandibles */}
+    <path d="M9 9 Q8 11 7 10" stroke="#7b4a1a" strokeWidth="1.2" fill="none"/>
+    <path d="M15 9 Q16 11 17 10" stroke="#7b4a1a" strokeWidth="1.2" fill="none"/>
+    {/* claw arms */}
+    <path d="M8 14 Q3 12 2 16" stroke="#9b6a2a" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    <path d="M2 16 Q1 18 3 18" stroke="#7b4a1a" strokeWidth="1.5" fill="none"/>
+    <path d="M16 14 Q21 12 22 16" stroke="#9b6a2a" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    {/* legs */}
+    <line x1="6" y1="22" x2="4" y2="28" stroke="#7b4a1a" strokeWidth="2"/>
+    <line x1="10" y1="24" x2="9" y2="29" stroke="#7b4a1a" strokeWidth="2"/>
+    <line x1="14" y1="24" x2="15" y2="29" stroke="#7b4a1a" strokeWidth="2"/>
+  </>,
+
+  // MOLATOR — blue-purple multi-armed crab creature
+  "Molator": <>
+    {/* central body */}
+    <ellipse cx="16" cy="18" rx="9" ry="8" fill="#7a45c4" />
+    {/* bulbous head */}
+    <ellipse cx="16" cy="10" rx="7" ry="6" fill="#8a55d4" />
+    {/* eyes — alien compound */}
+    <ellipse cx="12" cy="9" rx="2.5" ry="2" fill="#cc88ff" />
+    <ellipse cx="20" cy="9" rx="2.5" ry="2" fill="#cc88ff" />
+    <ellipse cx="12" cy="9" rx="1.2" ry="1" fill="#330066" />
+    <ellipse cx="20" cy="9" rx="1.2" ry="1" fill="#330066" />
+    {/* multiple arms */}
+    <path d="M8 14 Q2 10 1 6" stroke="#6a35b4" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <path d="M1 6 Q0 4 2 3" stroke="#5a25a4" strokeWidth="2" fill="none"/>
+    <path d="M8 18 Q2 18 0 22" stroke="#6a35b4" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <path d="M24 14 Q30 10 31 6" stroke="#6a35b4" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <path d="M31 6 Q32 4 30 3" stroke="#5a25a4" strokeWidth="2" fill="none"/>
+    <path d="M24 18 Q30 18 32 22" stroke="#6a35b4" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    {/* spiky protrusions */}
+    <line x1="12" y1="5" x2="10" y2="1" stroke="#5a25a4" strokeWidth="1.5"/>
+    <line x1="16" y1="4" x2="16" y2="0" stroke="#5a25a4" strokeWidth="1.5"/>
+    <line x1="20" y1="5" x2="22" y2="1" stroke="#5a25a4" strokeWidth="1.5"/>
+    {/* legs */}
+    <line x1="10" y1="24" x2="8" y2="30" stroke="#6a35b4" strokeWidth="2.5"/>
+    <line x1="16" y1="26" x2="16" y2="31" stroke="#6a35b4" strokeWidth="2.5"/>
+    <line x1="22" y1="24" x2="24" y2="30" stroke="#6a35b4" strokeWidth="2.5"/>
+  </>,
+
+  // GHHHK — insectoid, compound eyes, antennae, multi-limbed
+  "Ghhhk": <>
+    {/* abdomen */}
+    <ellipse cx="16" cy="23" rx="7" ry="6" fill="#4a8c5a" />
+    {/* thorax */}
+    <ellipse cx="16" cy="15" rx="6" ry="5" fill="#5a9c6a" />
+    {/* head */}
+    <ellipse cx="16" cy="8" rx="5" ry="4" fill="#4a8c5a" />
+    {/* antennae */}
+    <path d="M13 5 Q10 1 8 0" stroke="#3a7c4a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+    <path d="M19 5 Q22 1 24 0" stroke="#3a7c4a" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+    <circle cx="8" cy="0" r="1.5" fill="#3a7c4a"/>
+    <circle cx="24" cy="0" r="1.5" fill="#3a7c4a"/>
+    {/* compound eyes */}
+    <ellipse cx="12" cy="8" rx="3" ry="2.5" fill="#aaff44" />
+    <ellipse cx="20" cy="8" rx="3" ry="2.5" fill="#aaff44" />
+    {/* eye facets */}
+    <line x1="10" y1="8" x2="14" y2="8" stroke="#336600" strokeWidth="0.5"/>
+    <line x1="12" y1="6" x2="12" y2="10" stroke="#336600" strokeWidth="0.5"/>
+    <line x1="18" y1="8" x2="22" y2="8" stroke="#336600" strokeWidth="0.5"/>
+    <line x1="20" y1="6" x2="20" y2="10" stroke="#336600" strokeWidth="0.5"/>
+    {/* 6 legs */}
+    <path d="M10 14 Q5 12 3 15" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+    <path d="M10 17 Q4 17 2 20" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+    <path d="M10 20 Q5 22 4 26" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+    <path d="M22 14 Q27 12 29 15" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+    <path d="M22 17 Q28 17 30 20" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+    <path d="M22 20 Q27 22 28 26" stroke="#3a7c4a" strokeWidth="2" fill="none"/>
+  </>,
+
+  // MONNOK — skeletal thin creature with twisted staff/weapon
+  "Monnok": <>
+    {/* staff / weapon */}
+    <path d="M6 2 Q8 16 7 28" stroke="#aa8833" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    <path d="M4 4 Q6 2 9 5" stroke="#aa8833" strokeWidth="2" fill="none"/>
+    <path d="M4 8 Q6 6 9 9" stroke="#aa8833" strokeWidth="1.5" fill="none"/>
+    {/* ribbed torso */}
+    <ellipse cx="18" cy="18" rx="5" ry="8" fill="#d4c08a" />
+    {/* ribs */}
+    <line x1="13" y1="15" x2="23" y2="15" stroke="#b8a060" strokeWidth="1"/>
+    <line x1="13" y1="18" x2="23" y2="18" stroke="#b8a060" strokeWidth="1"/>
+    <line x1="13" y1="21" x2="23" y2="21" stroke="#b8a060" strokeWidth="1"/>
+    {/* skull-like head */}
+    <ellipse cx="18" cy="8" rx="5" ry="5" fill="#e4d09a" />
+    {/* sunken eyes */}
+    <ellipse cx="15" cy="7" rx="1.8" ry="2" fill="#222" />
+    <ellipse cx="21" cy="7" rx="1.8" ry="2" fill="#222" />
+    {/* prominent ear/horn */}
+    <path d="M13 5 Q10 2 12 0" stroke="#c4b07a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+    <path d="M23 5 Q26 2 24 0" stroke="#c4b07a" strokeWidth="2" fill="none" strokeLinecap="round"/>
+    {/* thin arms */}
+    <path d="M13 16 Q8 13 7 16" stroke="#c4a070" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    <path d="M23 16 Q28 13 29 17" stroke="#c4a070" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    {/* legs */}
+    <line x1="15" y1="26" x2="13" y2="31" stroke="#c4a070" strokeWidth="2.5"/>
+    <line x1="21" y1="26" x2="23" y2="31" stroke="#c4a070" strokeWidth="2.5"/>
+  </>,
+
+  // SAVRIP (MANTELLIAN SAVRIP) — large armoured bipedal reptile
+  "Savrip": <>
+    {/* massive armoured torso */}
+    <ellipse cx="16" cy="18" rx="11" ry="10" fill="#4a6644" />
+    {/* armour plate */}
+    <path d="M8 12 Q16 8 24 12 Q26 18 24 24 Q16 26 8 24 Q6 18 8 12Z" fill="#3a5534" stroke="#2a4524" strokeWidth="1"/>
+    {/* armour belt */}
+    <rect x="8" y="21" width="16" height="3" rx="1" fill="#2a3a24" />
+    <circle cx="16" cy="22.5" r="1.5" fill="#4a6644"/>
+    <circle cx="11" cy="22.5" r="1" fill="#4a6644"/>
+    <circle cx="21" cy="22.5" r="1" fill="#4a6644"/>
+    {/* bulldog-like head */}
+    <ellipse cx="16" cy="7" rx="8" ry="7" fill="#4a6644" />
+    {/* snout */}
+    <ellipse cx="16" cy="10" rx="5" ry="3" fill="#3a5534" />
+    {/* teeth */}
+    <line x1="13" y1="11" x2="13" y2="13" stroke="white" strokeWidth="1.2"/>
+    <line x1="16" y1="12" x2="16" y2="14" stroke="white" strokeWidth="1.2"/>
+    <line x1="19" y1="11" x2="19" y2="13" stroke="white" strokeWidth="1.2"/>
+    {/* eyes */}
+    <circle cx="11" cy="5" r="2" fill="#886633" />
+    <circle cx="11" cy="5" r="1" fill="#111" />
+    <circle cx="21" cy="5" r="2" fill="#886633" />
+    <circle cx="21" cy="5" r="1" fill="#111" />
+    {/* small ear bumps */}
+    <ellipse cx="8" cy="3" rx="2" ry="1.5" fill="#3a5534" />
+    <ellipse cx="24" cy="3" rx="2" ry="1.5" fill="#3a5534" />
+    {/* heavy arms */}
+    <path d="M6 16 Q1 18 1 24" stroke="#3a5534" strokeWidth="5" fill="none" strokeLinecap="round"/>
+    <path d="M26 16 Q31 18 31 24" stroke="#3a5534" strokeWidth="5" fill="none" strokeLinecap="round"/>
+    {/* fists */}
+    <circle cx="1" cy="25" r="3" fill="#3a5534"/>
+    <circle cx="31" cy="25" r="3" fill="#3a5534"/>
+    {/* legs */}
+    <rect x="10" y="26" width="5" height="6" rx="2" fill="#3a5534"/>
+    <rect x="17" y="26" width="5" height="6" rx="2" fill="#3a5534"/>
+  </>,
+
+  // GROND — electric-discharging creature, glowing crackling energy
+  "Grond": <>
+    {/* body */}
+    <ellipse cx="16" cy="18" rx="8" ry="9" fill="#5a8a18" />
+    {/* head */}
+    <ellipse cx="16" cy="9" rx="6" ry="5" fill="#6a9a28" />
+    {/* eyes glowing */}
+    <circle cx="13" cy="8" r="2" fill="#ccff00" />
+    <circle cx="13" cy="8" r="1" fill="#fff" />
+    <circle cx="19" cy="8" r="2" fill="#ccff00" />
+    <circle cx="19" cy="8" r="1" fill="#fff" />
+    {/* electric discharge — crackling bolts */}
+    <path d="M8 14 L4 10 L6 12 L2 8" stroke="#ccff00" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.9"/>
+    <path d="M24 14 L28 10 L26 12 L30 8" stroke="#ccff00" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity="0.9"/>
+    <path d="M16 4 L14 0 L16 2 L15 -1" stroke="#ccff00" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.8"/>
+    {/* electric aura glow */}
+    <ellipse cx="16" cy="16" rx="10" ry="11" fill="none" stroke="#88ff00" strokeWidth="1" opacity="0.4" strokeDasharray="2 3"/>
+    {/* arms with sparks at tips */}
+    <path d="M8 16 Q3 14 2 18" stroke="#5a8a18" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <circle cx="2" cy="18" r="2" fill="#ccff00" opacity="0.8"/>
+    <path d="M24 16 Q29 14 30 18" stroke="#5a8a18" strokeWidth="3" fill="none" strokeLinecap="round"/>
+    <circle cx="30" cy="18" r="2" fill="#ccff00" opacity="0.8"/>
+    {/* legs */}
+    <rect x="11" y="25" width="4" height="6" rx="2" fill="#4a7a18"/>
+    <rect x="17" y="25" width="4" height="6" rx="2" fill="#4a7a18"/>
+  </>,
+};
+
+
+
+// ═══════════════════════════════════════════════════════════════
 // COMBAT ENGINE
 // ═══════════════════════════════════════════════════════════════
 const zoneAtkBonus = (space) => {
@@ -124,35 +377,35 @@ const resolveCombat = (attacker, defender, pieces) => {
 // ═══════════════════════════════════════════════════════════════
 // AI (Wookiee difficulty)
 // ═══════════════════════════════════════════════════════════════
+// ── Easy AI ──────────────────────────────────────────────────
+// Picks a random valid move. Prefers attacking an enemy with 50% probability.
+// Simple and reliable — no complex scoring that could produce edge-case stalls.
 const aiChooseMove = (darkPieces, lightPieces, allPieces) => {
   const alive = darkPieces.filter(p => p.alive && p.position !== null);
-  let best = null, bestScore = -9999;
+  if (!alive.length) return null;
+
+  const allMoves = [];
+  const attackMoves = [];
 
   for (const piece of alive) {
     const reach = reachableSpaces(piece.position, CREATURES[piece.name].moveRange);
     for (const dest of reach) {
       const occupant = allPieces.find(p => p.position === dest && p.alive);
       if (occupant && occupant.team === "dark") continue;
-      let score = 0;
-      if (occupant) {
-        const wp = CREATURES[piece.name].attack + zoneAtkBonus(dest);
-        const winP = wp / (wp + CREATURES[occupant.name].defense);
-        score += 100 * winP * (1 - occupant.hp / CREATURES[occupant.name].maxHp + 0.1);
-      }
-      const dr = ringOf(dest);
-      if (["Ng'ok","Molator","Ghhhk"].includes(piece.name)) score += dr * 12;
-      if (["Houjix","Savrip"].includes(piece.name)) score -= dr * 6;
-      for (const ep of lightPieces.filter(p => p.alive)) {
-        const dist = Math.abs(ringOf(dest) - ringOf(ep.position)) +
-          Math.min(Math.abs(sectOf(dest) - sectOf(ep.position)), 8 - Math.abs(sectOf(dest) - sectOf(ep.position)));
-        score += Math.max(0, 5 - dist);
-      }
-      if (score > bestScore) { bestScore = score; best = { piece, dest }; }
+      const move = { piece, dest };
+      allMoves.push(move);
+      if (occupant && occupant.team === "light") attackMoves.push(move);
     }
   }
-  return best;
-};
 
+  if (!allMoves.length) return null;
+
+  // 50% chance to attack if possible, otherwise move randomly
+  if (attackMoves.length && Math.random() < 0.5) {
+    return attackMoves[Math.floor(Math.random() * attackMoves.length)];
+  }
+  return allMoves[Math.floor(Math.random() * allMoves.length)];
+};
 // ═══════════════════════════════════════════════════════════════
 // INITIAL GAME STATE
 // ═══════════════════════════════════════════════════════════════
@@ -193,7 +446,7 @@ export default function DejarikGame() {
   const [bonusTurn, setBonusTurn]     = useState(false);
   const [stunned, setStunned]         = useState({});        // pieceId → turns
   const [animSpace, setAnimSpace]     = useState(null);
-  const aiThinkingRef = useRef(false);
+  // aiThinkingRef removed — AI flow handled by effect dependencies only
 
   const boardSize   = 420;
   const cx          = boardSize / 2;
@@ -204,10 +457,14 @@ export default function DejarikGame() {
   // ── helpers ────────────────────────────────────────────────
   const pieceAt   = useCallback((space, ps = pieces) => ps.find(p => p.position === space && p.alive) || null, [pieces]);
   const aliveOf   = (team, ps = pieces) => ps.filter(p => p.team === team && p.alive);
+  // checkWin: always pass the fresh ps array — never relies on stale closure
+  // Returns winning team only when the ENTIRE enemy roster is eliminated (all 8 dead)
   const checkWin  = (ps) => {
-    if (!aliveOf("light", ps).length) return "dark";
-    if (!aliveOf("dark",  ps).length) return "light";
-    return null;
+    const lightAlive = ps.filter(p => p.team === "light" && p.alive).length;
+    const darkAlive  = ps.filter(p => p.team === "dark"  && p.alive).length;
+    if (lightAlive === 0) return "dark";
+    if (darkAlive  === 0) return "light";
+    return null;  // game continues — creatures still standing on both sides
   };
 
   const endTurn = (ps, nextTeam, log = []) => {
@@ -261,21 +518,31 @@ export default function DejarikGame() {
       }
 
       setPieces(ps);
-      const newWinner = checkWin(ps);
-      if (newWinner) { setWinner(newWinner); setPhase("over"); return; }
+      setCombatLog(prev => [...prev, "── COMBAT ──", ...result.log]);
+      setShowLog(true);
 
-      // Bonus move: winner gets another turn if they are on the active team
-      if (winner.team === currentActiveTeam) {
+      // Check win ONLY after updating — game ends when ALL 8 enemy pieces are gone
+      const newWinner = checkWin(ps);
+      if (newWinner) {
+        setWinner(newWinner);
+        setPhase("over");
+        setStatusMsg(`${newWinner === "light" ? "☀️ Light Side" : "🌑 Dark Side"} WINS — all enemy creatures eliminated!`);
+        return;
+      }
+
+      // Bonus move: only grant to human player (light side)
+      // AI (dark) always ends turn immediately after combat to avoid effect stall
+      if (winner.team === currentActiveTeam && currentActiveTeam === "light") {
         setBonusTurn(true);
         setSelected(null);
         setValidMoves([]);
         setPhase("select");
-        setStatusMsg(`🎯 ${winner.name} wins combat! BONUS MOVE — move any piece again`);
-        setCombatLog(prev => [...prev, "── NEW COMBAT ──", ...result.log]);
-        setShowLog(true);
+        const remaining = ps.filter(p => p.team !== currentActiveTeam && p.alive).length;
+        setStatusMsg(`🎯 ${winner.name} wins! BONUS MOVE — ${remaining} enemy creature${remaining!==1?"s":""} remain`);
       } else {
+        // AI won combat OR defender won — always end turn and switch sides
         const next = currentActiveTeam === "light" ? "dark" : "light";
-        endTurn(ps, next, result.log);
+        endTurn(ps, next, []);
       }
     } else {
       // Simple move, no combat
@@ -313,32 +580,48 @@ export default function DejarikGame() {
   };
 
   // ── AI turn ────────────────────────────────────────────────
+  // Single flat effect — no nested timeouts, no ref guards.
+  // Fires whenever activeTeam=dark AND phase=select AND pieces state changes.
+  // The pieces fingerprint ensures it re-fires after every combat (kill or bonus turn).
   useEffect(() => {
-    if (mode !== "pve" || activeTeam !== "dark" || phase !== "select" || phase === "over") return;
-    if (aiThinkingRef.current) return;
-    aiThinkingRef.current = true;
+    if (mode !== "pve") return;
+    if (activeTeam !== "dark") return;
+    if (phase !== "select") return;
+    if (winner) return;
+
+    // Snapshot piece state at effect-fire time
+    const currentPieces = pieces;
+    const dark  = currentPieces.filter(p => p.team === "dark"  && p.alive);
+    const light = currentPieces.filter(p => p.team === "light" && p.alive);
+
     setStatusMsg("🤖 Wookiee AI is calculating…");
 
     const timer = setTimeout(() => {
-      const dark  = pieces.filter(p => p.team === "dark"  && p.alive);
-      const light = pieces.filter(p => p.team === "light" && p.alive);
-      const move  = aiChooseMove(dark, light, pieces);
-      if (move) {
-        setSelected(move.piece.id);
-        setValidMoves([move.dest]);
-        setTimeout(() => {
-          executeMove(move.piece.id, move.dest, pieces, "dark");
-          setBonusTurn(false);
-          aiThinkingRef.current = false;
-        }, 400);
-      } else {
-        endTurn(pieces, "light");
-        aiThinkingRef.current = false;
+      const move = aiChooseMove(dark, light, currentPieces);
+
+      if (!move) {
+        // No valid move — hand turn to light
+        setActiveTeam("light");
+        setPhase("select");
+        setSelected(null);
+        setValidMoves([]);
+        setStatusMsg("☀️ Light Side — choose your piece");
+        return;
       }
+
+      // Execute move immediately — executeMove handles setPieces + endTurn/bonus internally
+      setSelected(move.piece.id);
+      executeMove(move.piece.id, move.dest, currentPieces, "dark");
+      setSelected(null);
+      setValidMoves([]);
     }, 900);
+
     return () => clearTimeout(timer);
+  // pieces fingerprint: re-fire after every kill or move (alive count + hp sum)
   // eslint-disable-next-line
-  }, [activeTeam, phase, mode]);
+  }, [activeTeam, phase, mode, winner,
+      pieces.filter(p=>p.alive).length,
+      pieces.reduce((a,p)=>a+p.hp,0)]);
 
   // ── restart ────────────────────────────────────────────────
   const restart = (m) => {
@@ -380,13 +663,14 @@ export default function DejarikGame() {
           />
           {/* space number */}
           <text x={x} y={y - 8} textAnchor="middle" fontSize="8" fill="#4a7fa5" fontFamily="monospace">{s}</text>
-          {/* piece */}
+          {/* piece — SVG portrait */}
           {occ && (
             <>
-              <text x={x} y={y + 6} textAnchor="middle" fontSize="16"
-                style={{ filter: `drop-shadow(0 0 6px ${CREATURES[occ.name].color})` }}>
-                {CREATURES[occ.name].emoji}
-              </text>
+              <foreignObject x={x - 14} y={y - 16} width={28} height={28}>
+                <div xmlns="http://www.w3.org/1999/xhtml">
+                  <CreatureSVG name={occ.name} size={28} team={occ.team} />
+                </div>
+              </foreignObject>
               {/* HP bar */}
               <rect x={x - 12} y={y + 14} width={24} height={3} rx={1} fill="#1a1a2e" />
               <rect x={x - 12} y={y + 14}
@@ -454,7 +738,7 @@ export default function DejarikGame() {
               border: `1px solid ${selected===p.id ? "#00e5ff" : "#1e2a4a"}`,
               transition:"all 0.15s",
             }}>
-            <span style={{ fontSize:14 }}>{CREATURES[p.name].emoji}</span>
+            <CreatureSVG name={p.name} size={28} team={p.team} />
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontSize:10, color:"#c0d8f0", fontFamily:"monospace", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{p.name}</div>
               <div style={{ height:3, background:"#1a1a2e", borderRadius:2, marginTop:2 }}>
@@ -610,13 +894,17 @@ export default function DejarikGame() {
             marginTop:12, padding:"10px 18px", width:"100%", maxWidth:820,
             background:"rgba(0,229,255,0.05)", border:"1px solid #1e3a5f", borderRadius:6,
             fontSize:10, color:"#a0c4e0", animation:"fadeIn 0.2s ease-out",
+            display:"flex", alignItems:"center", gap:10,
           }}>
-            <span style={{ color:CREATURES[sel.name].color, fontFamily:"'Orbitron',monospace" }}>
-              {CREATURES[sel.name].emoji} {sel.name}
-            </span>
-            &nbsp;&nbsp;ATK: {CREATURES[sel.name].attack}  DEF: {CREATURES[sel.name].defense}  HP: {sel.hp}/{CREATURES[sel.name].maxHp}
-            &nbsp;&nbsp;<span style={{ color:"#7b2d8b" }}>✦ {CREATURES[sel.name].special}</span>
-            &nbsp;&nbsp;<span style={{ color:"#4a7fa5" }}>Valid moves: {validMoves.join(", ") || "none"}</span>
+            <CreatureSVG name={sel.name} size={36} team={sel.team} />
+            <div>
+              <span style={{ color:CREATURES[sel.name].color, fontFamily:"'Orbitron',monospace" }}>
+                {sel.name}
+              </span>
+              &nbsp;&nbsp;ATK: {CREATURES[sel.name].attack}  DEF: {CREATURES[sel.name].defense}  HP: {sel.hp}/{CREATURES[sel.name].maxHp}
+              &nbsp;&nbsp;<span style={{ color:"#7b2d8b" }}>✦ {CREATURES[sel.name].special}</span>
+              &nbsp;&nbsp;<span style={{ color:"#4a7fa5" }}>Valid moves: {validMoves.join(", ") || "none"}</span>
+            </div>
           </div>
         );
       })()}
@@ -658,17 +946,20 @@ export default function DejarikGame() {
       {/* Creature reference */}
       <div style={{ marginTop:16, width:"100%", maxWidth:820 }}>
         <div style={{ fontSize:9, color:"#2a4a6a", marginBottom:6, fontFamily:"'Orbitron',monospace", letterSpacing:1 }}>CREATURE REFERENCE</div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(160px, 1fr))", gap:6 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(170px, 1fr))", gap:6 }}>
           {NAMES.map(name => {
             const d = CREATURES[name];
             return (
               <div key={name} style={{
-                padding:"6px 10px", background:"rgba(255,255,255,0.02)", border:`1px solid ${d.color}33`,
-                borderRadius:6, fontSize:9,
+                padding:"8px 10px", background:"rgba(255,255,255,0.02)", border:`1px solid ${d.color}33`,
+                borderRadius:6, fontSize:9, display:"flex", gap:8, alignItems:"flex-start",
               }}>
-                <div style={{ color:d.color, fontFamily:"monospace", marginBottom:2 }}>{d.emoji} {name}</div>
-                <div style={{ color:"#4a7fa5" }}>ATK:{d.attack} DEF:{d.defense} HP:{d.maxHp} MVR:{d.moveRange}</div>
-                <div style={{ color:"#2a5a7a", marginTop:2 }}>{d.special}</div>
+                <CreatureSVG name={name} size={40} team="light" />
+                <div>
+                  <div style={{ color:d.color, fontFamily:"monospace", marginBottom:2 }}>{name}</div>
+                  <div style={{ color:"#4a7fa5" }}>ATK:{d.attack} DEF:{d.defense} HP:{d.maxHp} MVR:{d.moveRange}</div>
+                  <div style={{ color:"#2a5a7a", marginTop:2 }}>{d.special}</div>
+                </div>
               </div>
             );
           })}
